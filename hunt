@@ -1,0 +1,17 @@
+#!/usr/bin/env python3
+import argparse
+import beagle
+import os
+import sys
+
+def main():
+    parser = argparse.ArgumentParser(description='Beagle')
+    parser.add_argument('--interface', type=str, required=True, help='The internet protocol address to use.')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Increases message verbosity.')
+    args=parser.parse_args()
+    return beagle.hunt(args)
+
+if __name__ == '__main__':
+    if os.geteuid():
+        sys.exit(beagle.color.error('Only root can hunt for packets.'))
+    sys.exit(main())
