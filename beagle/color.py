@@ -19,10 +19,10 @@ def error(message):
     reset = COLORS['reset']
     print(f'{message_color}[-] {message}{reset}')
 
-def normal(message):
+def normal(message, end='\n'):
     message_color = COLORS['reset']
     reset = COLORS['reset']
-    print(f'{message_color}{message}{reset}')
+    print(f'{message_color}{message}{reset}', end=end)
 
 def verbose(message, color):
     if stomach.verbose:

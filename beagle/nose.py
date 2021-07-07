@@ -1,7 +1,8 @@
 import socket
 import sys
+import time
 
-from beagle import color
+from beagle import color, stomach
 from ipaddress import IPv4Address, IPv6Address
 
 class Frame():
@@ -51,11 +52,16 @@ class Segment():
         self.protocol = protocol
         self.src_port = int(segment[:2].hex(), 16)
         self.dst_port = int(segment[2:4].hex(), 16)
+        if protocol == 'ICMP':
+            self.header_length = segment[2:4] * 4
         if protocol == 'TCP':
             self.header_length = (segment[12] >> 4 & 15) * 4
         if protocol == 'UDP':
             self.header_length = segment[4:6] * 4
-        self.data = segment[self.header_length:]
+        try:
+            self.data = segment[self.header_length:]
+        except:
+            self.data = b''
 
 class Nose():
     def __init__(self, interface):
@@ -70,7 +76,7 @@ class Nose():
             sys.exit()
         color.success(f'Sniffing {self.interface}')
         while True:
-            frame = Frame(self.socket.recv(2048))
+            frame = Frame(self.socket.recv(2000))
             if not frame.network_protocol:
                 color.verbose('Unkown network protocol', color.error)
                 continue
@@ -79,6 +85,6 @@ class Nose():
                 color.verbose('Unkown transport protocol', color.error)
                 continue
             segment = Segment(datagram.segment, datagram.transport_protocol)
-            color.verbose(f'{segment.protocol}://{datagram.src_ip}:{segment.src_port}/', color.normal)
-            data = segment.data
-            color.verbose(f'{str(data)}', color.normal)
+            if stomach.srcip.match(str(datagram.src_ip)) and stomach.dstport.match(str(segment.dst_port)):
+                color.normal(f'{segment.protocol.lower()}://{datagram.src_ip}:{segment.dst_port}/')
+                color.verbose(f'{segment.data}', color.normal)

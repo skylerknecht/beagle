@@ -6,8 +6,10 @@ import sys
 
 def main():
     parser = argparse.ArgumentParser(description='Beagle')
-    parser.add_argument('--interface', type=str, required=True, help='The internet protocol address to use.')
-    parser.add_argument('-v', '--verbose', action='store_true', help='Increases message verbosity.')
+    parser.add_argument('--interface', type=str, required=True, help='The interface to sniff.')
+    parser.add_argument('--srcip', type=str, default=r'.', required=False, help='A source internet protocol address to filter on.')
+    parser.add_argument('--dstport', type=str, default=r'.', required=False, help='A destination port to filter on.')
+    parser.add_argument('-v', '--verbose',  action='store_true', help='Increases message verbosity.')
     args=parser.parse_args()
     return beagle.hunt(args)
 
