@@ -11,11 +11,13 @@
 
 ### Documentation
 ```
-srcip: Filter on the source IP found in the datagram.
-dstport: Filter on the destionation port found in the segment.
+# Flags
+  interface: Interface to hunt for packets on.
+  srcip: Filter on the source IP found in the datagram.
+  dstport: Filter on the destionation port found in the segment.
 ```
 
-### Using Connect
+### Using Beagle
 ```sh
 sudo ./hunt --interface eth0
 ```
